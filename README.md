@@ -1,7 +1,7 @@
 A simple shop plugin custom made for WoC.
 Requires Vault and MythicMobs as dependencies.
 
-#How to create a shop:
+#How to create a shop:#
 
 ###1. Place a sign on a chest.
 
