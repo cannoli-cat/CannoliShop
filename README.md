@@ -12,7 +12,7 @@ Requires Vault and MythicMobs as dependencies.
   ### 4. Can be any valid minecraft material, MythicItem, or '$' for Vault Economy.
 
 ## Commands:
-  ### /showshops <player> (requires cannolishop.show permission)
+  ### /showshops player (requires cannolishop.show permission)
 
 ## Permissions:
   ### cannolishop.show
