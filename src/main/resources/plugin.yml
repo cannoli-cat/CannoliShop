@@ -1,0 +1,9 @@
+name: CannoliShop
+version: '${project.version}'
+main: cannolicat.cannolishop.CannoliShop
+api-version: '1.20'
+commands:
+  showshops:
+    description: View a player's shops!
+    usage: /<command> <player>
+    permission: cannolishop.show
