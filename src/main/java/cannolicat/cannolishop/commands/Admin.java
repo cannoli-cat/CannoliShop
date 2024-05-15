@@ -15,11 +15,11 @@ public class Admin implements CommandExecutor {
         if(commandSender instanceof Player) {
             Player player = (Player) commandSender;
             if(CannoliShop.getPlugin().admins.contains(player.getUniqueId())) {
-                player.sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + "Admin mode disabled!");
+                player.sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "Admin mode disabled!");
                 CannoliShop.getPlugin().admins.remove(player.getUniqueId());
                 return true;
             }
-            player.sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + "Admin mode enabled!");
+            player.sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.GREEN + "Admin mode enabled!");
             CannoliShop.getPlugin().admins.add(player.getUniqueId());
         } else
             Bukkit.getLogger().warning("[CannoliShop] This command can only be used by players!");
