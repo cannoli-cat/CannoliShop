@@ -15,10 +15,10 @@ public class ShopDestroy implements Listener {
         if(e.getBlock().getState() instanceof Sign) {
             Sign sign = (Sign) e.getBlock().getState();
             for(Shop shop : CannoliShop.getPlugin().shops) {
-                if(shop.getSignLoc().equals(sign.getLocation()) && !e.getPlayer().getUniqueId().equals(shop.getOwner())) {
+                if(!CannoliShop.getPlugin().admins.contains(e.getPlayer().getUniqueId()) && shop.getSignLoc().equals(sign.getLocation()) && !e.getPlayer().getUniqueId().equals(shop.getOwner())) {
                     e.setCancelled(true);
                     return;
-                } else if(shop.getSignLoc().equals(sign.getLocation()) && e.getPlayer().getUniqueId().equals(shop.getOwner())) {
+                } else if(shop.getSignLoc().equals(sign.getLocation()) && e.getPlayer().getUniqueId().equals(shop.getOwner()) || shop.getSignLoc().equals(sign.getLocation()) && CannoliShop.getPlugin().admins.contains(e.getPlayer().getUniqueId())) {
                     shop.destroyShop();
                     e.getPlayer().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " +ChatColor.GREEN + "Shop successfully removed!");
                     return;
@@ -28,10 +28,10 @@ public class ShopDestroy implements Listener {
         if(e.getBlock().getState() instanceof Chest) {
             Chest chest = (Chest) e.getBlock().getState();
             for(Shop shop : CannoliShop.getPlugin().shops) {
-                if(shop.getChestLoc().equals(chest.getLocation()) && !e.getPlayer().getUniqueId().equals(shop.getOwner())) {
+                if(!CannoliShop.getPlugin().admins.contains(e.getPlayer().getUniqueId()) && shop.getChestLoc().equals(chest.getLocation()) && !e.getPlayer().getUniqueId().equals(shop.getOwner())) {
                     e.setCancelled(true);
                     return;
-                } else if(shop.getChestLoc().equals(chest.getLocation()) && e.getPlayer().getUniqueId().equals(shop.getOwner())) {
+                } else if(shop.getChestLoc().equals(chest.getLocation()) && e.getPlayer().getUniqueId().equals(shop.getOwner()) || shop.getChestLoc().equals(chest.getLocation()) && CannoliShop.getPlugin().admins.contains(e.getPlayer().getUniqueId())) {
                     shop.destroyShop();
                     e.getPlayer().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " +ChatColor.GREEN + "Shop successfully removed!");
                     return;

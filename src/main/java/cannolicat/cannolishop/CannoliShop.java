@@ -1,5 +1,6 @@
 package cannolicat.cannolishop;
 
+import cannolicat.cannolishop.commands.Admin;
 import cannolicat.cannolishop.commands.ShowShops;
 import cannolicat.cannolishop.events.ShopCreate;
 import cannolicat.cannolishop.events.ShopDestroy;
@@ -16,11 +17,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public final class CannoliShop extends JavaPlugin {
     public ArrayList<Shop> shops = new ArrayList<>();
+    public ArrayList<UUID> admins = new ArrayList<>();
     private static CannoliShop plugin;
-    private static Economy economy;
+    private static Economy economy = null;
     private static Permission perms = null;
     private static Chat chat = null;
     private static final File file = new File("plugins" + File.separator + "CannoliShop" + File.separator + "shops.ser");
@@ -36,6 +39,7 @@ public final class CannoliShop extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
 
         getCommand("showshops").setExecutor(new ShowShops());
+        getCommand("adminshops").setExecutor(new Admin());
 
         if(!setupEconomy()) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));

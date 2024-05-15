@@ -50,12 +50,12 @@ public class ShopInteract implements Listener {
         Shop shop = shops.get(e.getWhoClicked().getUniqueId());
 
         if(shop == null) return;
-        if(e.getClickedInventory() == e.getWhoClicked().getInventory() && !e.getWhoClicked().getUniqueId().equals(shop.getOwner())) {
+        if(e.getClickedInventory() == e.getWhoClicked().getInventory() && !e.getWhoClicked().getUniqueId().equals(shop.getOwner()) && !CannoliShop.getPlugin().admins.contains(e.getWhoClicked().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
 
-        if(e.getClickedInventory() != null && shop.getChestLoc().equals(e.getClickedInventory().getLocation()) && !e.getWhoClicked().getUniqueId().equals(shop.getOwner())) {
+        if(e.getClickedInventory() != null && shop.getChestLoc().equals(e.getClickedInventory().getLocation()) && !e.getWhoClicked().getUniqueId().equals(shop.getOwner()) && !CannoliShop.getPlugin().admins.contains(e.getWhoClicked().getUniqueId())) {
             if(shop.getMaterial() == null && shop.getMythicItem() == null) {
                 if(CannoliShop.getEconomy().getBalance(Bukkit.getPlayer(e.getWhoClicked().getUniqueId())) < shop.getPrice()) {
                     e.setCancelled(true);

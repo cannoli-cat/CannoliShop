@@ -7,3 +7,7 @@ commands:
     description: View a player's shops!
     usage: /<command> <player>
     permission: cannolishop.show
+  adminshops:
+    description: Let's you remove/access a chest shop as if you were the owner!
+    usage: /<command>
+    permission: cannolishop.admin
