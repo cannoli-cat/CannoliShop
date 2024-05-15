@@ -13,8 +13,10 @@ Requires Vault and MythicMobs as dependencies.
 
 ## Commands:
    /showshops player <sub>(requires cannolishop.show)</sub>
+   
    /adminshops <sub>(requires cannolishop.admin)</sub>
 
 ## Permissions:
    cannolishop.show
+   
    cannolishop.admin
