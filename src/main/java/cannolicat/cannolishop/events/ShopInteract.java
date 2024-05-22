@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ShopInteract implements Listener {
-    private HashMap<UUID, Shop> shops = new HashMap<>();
+    private final HashMap<UUID, Shop> shops = new HashMap<>();
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent e) {
@@ -39,9 +39,7 @@ public class ShopInteract implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
-        if(e.getInventory().getHolder() instanceof Chest) {
-            shops.remove(e.getPlayer().getUniqueId());
-        }
+        shops.remove(e.getPlayer().getUniqueId());
     }
 
     @EventHandler

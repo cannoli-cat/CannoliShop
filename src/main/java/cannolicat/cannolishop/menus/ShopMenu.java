@@ -4,8 +4,10 @@ import cannolicat.cannolishop.CannoliShop;
 import cannolicat.cannolishop.Shop;
 import cannolicat.cannolishop.menus.menusystem.PaginatedMenu;
 import cannolicat.cannolishop.menus.menusystem.PlayerMenuUtility;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -17,11 +19,11 @@ import java.util.Objects;
 public class ShopMenu extends PaginatedMenu {
     private final ArrayList<Shop> shops = new ArrayList<>();
 
-    public ShopMenu(PlayerMenuUtility p) {
+    public ShopMenu(PlayerMenuUtility p, OfflinePlayer target) {
         super(p);
 
         for(Shop shop : CannoliShop.getPlugin().shops) {
-            if(shop.getOwner().equals(p.getPlayer().getUniqueId())) {
+            if(shop.getOwner().equals(target.getUniqueId())) {
                 shops.add(shop);
             }
         }
@@ -29,7 +31,7 @@ public class ShopMenu extends PaginatedMenu {
 
     @Override
     public String getMenuName() {
-        return playerMenuUtility.getPlayer().getDisplayName() + "'s Shops";
+        return Bukkit.getOfflinePlayer(shops.get(0).getOwner()).getName() + "'s Shops";
     }
 
     @Override

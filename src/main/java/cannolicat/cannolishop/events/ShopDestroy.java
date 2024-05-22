@@ -12,8 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 public class ShopDestroy implements Listener {
     @EventHandler
     public void onShopDestroy(BlockBreakEvent e) {
-        if(e.getBlock().getState() instanceof Sign) {
-            Sign sign = (Sign) e.getBlock().getState();
+        if(e.getBlock().getState() instanceof Sign sign) {
             for(Shop shop : CannoliShop.getPlugin().shops) {
                 if(!CannoliShop.getPlugin().admins.contains(e.getPlayer().getUniqueId()) && shop.getSignLoc().equals(sign.getLocation()) && !e.getPlayer().getUniqueId().equals(shop.getOwner())) {
                     e.setCancelled(true);
@@ -25,8 +24,7 @@ public class ShopDestroy implements Listener {
                 }
             }
         }
-        if(e.getBlock().getState() instanceof Chest) {
-            Chest chest = (Chest) e.getBlock().getState();
+        if(e.getBlock().getState() instanceof Chest chest) {
             for(Shop shop : CannoliShop.getPlugin().shops) {
                 if(!CannoliShop.getPlugin().admins.contains(e.getPlayer().getUniqueId()) && shop.getChestLoc().equals(chest.getLocation()) && !e.getPlayer().getUniqueId().equals(shop.getOwner())) {
                     e.setCancelled(true);

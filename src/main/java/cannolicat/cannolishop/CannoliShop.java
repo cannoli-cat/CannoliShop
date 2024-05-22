@@ -6,6 +6,7 @@ import cannolicat.cannolishop.events.ShopCreate;
 import cannolicat.cannolishop.events.ShopDestroy;
 import cannolicat.cannolishop.events.ShopInteract;
 import cannolicat.cannolishop.listeners.MenuListener;
+import cannolicat.cannolishop.listeners.PlayerQuitListener;
 import cannolicat.cannolishop.menus.menusystem.PlayerMenuUtility;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -37,6 +38,7 @@ public final class CannoliShop extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ShopInteract(), this);
         getServer().getPluginManager().registerEvents(new ShopDestroy(), this);
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
         getCommand("showshops").setExecutor(new ShowShops());
         getCommand("adminshops").setExecutor(new Admin());
