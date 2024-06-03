@@ -89,8 +89,9 @@ public class ShopMenu extends PaginatedMenu {
                     ArrayList<String> lore = new ArrayList<>();
 
                     if(shops.get(i).getMythicItem() != null && shops.get(i).getMaterial() == null) lore.add(ChatColor.LIGHT_PURPLE + "Price" + ChatColor.WHITE + ": " + shops.get(i).getPrice() + " " + shops.get(i).getMythicItem());
-                    else if (shops.get(i).getMaterial() != null & shops.get(i).getMythicItem() == null)  lore.add(ChatColor.LIGHT_PURPLE + "Price" + ChatColor.WHITE + ": " + shops.get(i).getPrice() + " " + shops.get(i).getMaterial());
-                    else if(shops.get(i).getMaterial() == null && shops.get(i).getMythicItem() == null) lore.add(ChatColor.LIGHT_PURPLE + "Price" + ChatColor.WHITE + ": " + ChatColor.GREEN + "$" + shops.get(i).getPrice());
+                    else if (shops.get(i).getMaterial() != null)  lore.add(ChatColor.LIGHT_PURPLE + "Price" + ChatColor.WHITE + ": " + shops.get(i).getPrice() + " " + shops.get(i).getMaterial());
+
+                    lore.add(ChatColor.RESET + "" + ChatColor.LIGHT_PURPLE + "Admin Shop" + ChatColor.WHITE + "? " + ChatColor.RESET + (shops.get(i).isAdmin() ? ChatColor.GREEN : ChatColor.DARK_RED) + shops.get(i).isAdmin());
                     lore.add(ChatColor.RESET + "" + ChatColor.BOLD + ChatColor.GOLD + "<Click to teleport>");
 
                     meta.setLore(lore);

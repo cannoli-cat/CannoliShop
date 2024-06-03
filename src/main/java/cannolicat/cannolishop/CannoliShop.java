@@ -1,18 +1,13 @@
 package cannolicat.cannolishop;
 
-import cannolicat.cannolishop.commands.Admin;
-import cannolicat.cannolishop.commands.ShowShops;
+import cannolicat.cannolishop.commands.CShop;
 import cannolicat.cannolishop.events.ShopCreate;
 import cannolicat.cannolishop.events.ShopDestroy;
 import cannolicat.cannolishop.events.ShopInteract;
 import cannolicat.cannolishop.listeners.MenuListener;
 import cannolicat.cannolishop.listeners.PlayerQuitListener;
 import cannolicat.cannolishop.menus.menusystem.PlayerMenuUtility;
-import net.milkbowl.vault.chat.Chat;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -24,9 +19,6 @@ public final class CannoliShop extends JavaPlugin {
     public ArrayList<Shop> shops = new ArrayList<>();
     public ArrayList<UUID> admins = new ArrayList<>();
     private static CannoliShop plugin;
-    private static Economy economy = null;
-    private static Permission perms = null;
-    private static Chat chat = null;
     private static final File file = new File("plugins" + File.separator + "CannoliShop" + File.separator + "shops.ser");
     private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
 
@@ -40,21 +32,12 @@ public final class CannoliShop extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
-        getCommand("showshops").setExecutor(new ShowShops());
-        getCommand("adminshops").setExecutor(new Admin());
-
-        if(!setupEconomy()) {
-            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-        setupPermissions();
-        setupChat();
+        getCommand("cshop").setExecutor(new CShop());
 
         if(file.exists()) {
-            getLogger().info("[CannoliShop] Found saved data... attempting to load...");
+            getLogger().info("Found saved data... attempting to load...");
             shops = loadShops();
-            getLogger().info("[CannoliShop] Successfully loaded saved data!");
+            getLogger().info("Successfully loaded saved data!");
         }
     }
 
@@ -64,53 +47,25 @@ public final class CannoliShop extends JavaPlugin {
             try {
                 file.getParentFile().mkdirs();
                 if (file.createNewFile()) {
-                    getLogger().info("[CannoliShop] Save file created: " + file.getName());
+                    getLogger().info("Save file created: " + file.getName());
                 }
             } catch (IOException e) {
-                getLogger().severe("[CannoliShop] An error occurred.");
+                getLogger().severe("An error occurred.");
                 e.printStackTrace();
             }
         }
 
         if(!shops.isEmpty() && file.exists()) {
-            if (saveShops()) getLogger().info("[CannoliShop] Successfully saved data!");
-            else getLogger().severe("[CannoliShop] Could not save data!");
+            if (saveShops()) getLogger().info("Successfully saved data!");
+            else getLogger().severe("Could not save data!");
         } else {
-            getLogger().info("[CannoliShop] Shops list is empty, cancelling save...");
+            getLogger().info("Shops list is empty, cancelling save...");
             if(file.exists()) file.delete();
         }
     }
 
     public static CannoliShop getPlugin() {
         return plugin;
-    }
-
-    public static Economy getEconomy() {
-        return economy;
-    }
-
-    private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-        economy = rsp.getProvider();
-        return economy != null;
-    }
-
-    private boolean setupChat() {
-        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        chat = rsp.getProvider();
-        return chat != null;
-    }
-
-    private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        perms = rsp.getProvider();
-        return perms != null;
     }
 
     private boolean saveShops() {

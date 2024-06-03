@@ -3,11 +3,6 @@ version: '${project.version}'
 main: cannolicat.cannolishop.CannoliShop
 api-version: '1.20'
 commands:
-  showshops:
-    description: View a player's shops!
-    usage: /<command> <player>
-    permission: cannolishop.show
-  adminshops:
-    description: Let's you remove/access a chest shop as if you were the owner!
-    usage: /<command>
-    permission: cannolishop.admin
+  cshop:
+    usage: /<command> <args> <args1>
+    permission: cannolishop.command

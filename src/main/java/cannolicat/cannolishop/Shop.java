@@ -16,8 +16,9 @@ public class Shop implements Serializable {
     private final Material material;
     private final String mythicItemInternalName;
     private final int chestX, chestY, chestZ, signX, signY, signZ;
+    private final boolean isAdmin;
 
-    public Shop(UUID owner, int price, Material material, Location chestLocation, Location signLocation) {
+    public Shop(UUID owner, int price, Material material, Location chestLocation, Location signLocation, boolean isAdmin) {
         this.owner = owner;
         this.price = price;
         this.material = material;
@@ -29,12 +30,13 @@ public class Shop implements Serializable {
         signY = signLocation.getBlockY();
         signZ = signLocation.getBlockZ();
         mythicItemInternalName = null;
+        this.isAdmin = isAdmin;
 
         CannoliShop.getPlugin().shops.add(this);
         Bukkit.getPlayer(owner).sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.GREEN + "Shop successfully created!");
     }
 
-    public Shop(UUID owner, int price, MythicItem mythicItem, Location chestLocation, Location signLocation) {
+    public Shop(UUID owner, int price, MythicItem mythicItem, Location chestLocation, Location signLocation, boolean isAdmin) {
         this.owner = owner;
         this.price = price;
         mythicItemInternalName = mythicItem.getInternalName();
@@ -46,6 +48,7 @@ public class Shop implements Serializable {
         signY = signLocation.getBlockY();
         signZ = signLocation.getBlockZ();
         material = null;
+        this.isAdmin = isAdmin;
 
         CannoliShop.getPlugin().shops.add(this);
         Bukkit.getPlayer(owner).sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.GREEN + "Shop successfully created!");
@@ -77,5 +80,9 @@ public class Shop implements Serializable {
 
     public void destroyShop() {
         CannoliShop.getPlugin().shops.remove(this);
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
     }
 }

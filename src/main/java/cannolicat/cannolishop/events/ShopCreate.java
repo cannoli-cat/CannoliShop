@@ -18,8 +18,8 @@ public class ShopCreate implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
-        if(e.getBlock().getState() instanceof Sign && e.getBlockAgainst().getState() instanceof Chest) {
-            against = (Chest) e.getBlockAgainst().getState();
+        if(e.getBlock().getState() instanceof Sign && e.getBlockAgainst().getState() instanceof Chest chest) {
+            against = chest;
         } else against = null;
     }
 
@@ -37,37 +37,41 @@ public class ShopCreate implements Listener {
             String[] lines = e.getLines();
             if(lines.length >= 3 && lines[0].equalsIgnoreCase("[price]")) {
                 int price;
+
                 try {
                     price = Integer.parseInt(lines[1]);
                 } catch (NumberFormatException ex) {
                     e.getPlayer().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "You must enter a valid number for a price!");
                     return;
                 }
+
                 if(price <= -1) {
                     e.getPlayer().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "You cannot enter negative numbers for a price!");
                     return;
                 }
 
-                Material material = null;
-                MythicItem mythicItem = null;
-                if(!lines[2].equalsIgnoreCase("$")) {
-                    material = Material.getMaterial(lines[2].toUpperCase());
-                    mythicItem = tryParseMythicItem(lines[2]);
+                Material material = Material.getMaterial(lines[2].toUpperCase());
+                MythicItem mythicItem = tryParseMythicItem(lines[2]);
 
-                    if (material == null && mythicItem == null) {
-                        e.getPlayer().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "Error on line 3! - You must enter a valid item or '$' for cash payment!");
-                        return;
-                    }
+                if (material == null && mythicItem == null) {
+                    e.getPlayer().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "Error on line 3! - You must enter a valid item!");
+                    return;
                 }
 
                 e.setLine(0, "["+ ChatColor.LIGHT_PURPLE + "PRICE" + ChatColor.RESET + "]");
-                e.setLine(lines.length-1, ChatColor.GOLD + e.getPlayer().getName());
-                if(mythicItem != null && material == null) e.setLine(lines.length-2, mythicItem.getInternalName());
-                else if (material != null && mythicItem == null) e.setLine(lines.length-2, material + "");
+
+                boolean admin = CannoliShop.getPlugin().admins.contains(e.getPlayer().getUniqueId());
+                if(admin) {
+                    e.setLine(lines.length-1, ChatColor.DARK_RED + "§nADMIN");
+                } else
+                    e.setLine(lines.length-1, ChatColor.GOLD + e.getPlayer().getName());
+
+                if(mythicItem != null && material == null) e.setLine(lines.length-2, ChatColor.AQUA + mythicItem.getInternalName());
+                else if (mythicItem == null) e.setLine(lines.length-2, ChatColor.AQUA + material.toString());
                 e.getBlock().getState().update();
 
-                if (material != null && mythicItem == null || material == null && mythicItem == null) new Shop(e.getPlayer().getUniqueId(), price, material, against.getLocation(), e.getBlock().getLocation());
-                else if (material == null) new Shop(e.getPlayer().getUniqueId(), price, mythicItem, against.getLocation(), e.getBlock().getLocation());
+                if (material != null) new Shop(e.getPlayer().getUniqueId(), price, material, against.getLocation(), e.getBlock().getLocation(), admin);
+                else new Shop(e.getPlayer().getUniqueId(), price, mythicItem, against.getLocation(), e.getBlock().getLocation(), admin);
             }
         }
     }

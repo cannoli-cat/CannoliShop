@@ -4,10 +4,7 @@ import cannolicat.cannolishop.CannoliShop;
 import cannolicat.cannolishop.Shop;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,73 +45,38 @@ public class ShopInteract implements Listener {
         Shop shop = shops.get(e.getWhoClicked().getUniqueId());
 
         if(shop == null) return;
-        if(e.getClickedInventory() == e.getWhoClicked().getInventory() && !e.getWhoClicked().getUniqueId().equals(shop.getOwner()) && !CannoliShop.getPlugin().admins.contains(e.getWhoClicked().getUniqueId())) {
+        if(e.getClickedInventory() == e.getWhoClicked().getInventory() && (!e.getWhoClicked().getUniqueId().equals(shop.getOwner()) || shop.isAdmin()) && !CannoliShop.getPlugin().admins.contains(e.getWhoClicked().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
 
-        if(e.getClickedInventory() != null && shop.getChestLoc().equals(e.getClickedInventory().getLocation()) && !e.getWhoClicked().getUniqueId().equals(shop.getOwner()) && !CannoliShop.getPlugin().admins.contains(e.getWhoClicked().getUniqueId())) {
+        if(e.getClickedInventory() != null && shop.getChestLoc().equals(e.getClickedInventory().getLocation()) && (!e.getWhoClicked().getUniqueId().equals(shop.getOwner()) || shop.isAdmin()) && !CannoliShop.getPlugin().admins.contains(e.getWhoClicked().getUniqueId())) {
             if(e.getWhoClicked().getInventory().firstEmpty() != -1) {
-                if (shop.getMaterial() == null && shop.getMythicItem() == null) {
-                    if (CannoliShop.getEconomy().getBalance(Bukkit.getPlayer(e.getWhoClicked().getUniqueId())) < shop.getPrice()) {
-                        e.setCancelled(true);
-                        e.getWhoClicked().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "You cannot afford this item!");
-                        return;
-                    }
-
-                    ItemStack item = e.getCurrentItem();
-                    if (item != null) {
-                        EconomyResponse withdrawal = CannoliShop.getEconomy().withdrawPlayer(Bukkit.getPlayer(e.getWhoClicked().getUniqueId()), shop.getPrice());
-                        e.getWhoClicked().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.GREEN + "$" + withdrawal.amount + " has been sent to " + Bukkit.getPlayer(shop.getOwner()).getDisplayName());
-
-                        e.getWhoClicked().getInventory().addItem(item);
-                        ItemStack lastItem = e.getCurrentItem();
-                        e.setCurrentItem(new ItemStack(Material.AIR));
-
-                        if (Bukkit.getPlayer(shop.getOwner()) != null) {
-                            EconomyResponse payment = CannoliShop.getEconomy().depositPlayer(Bukkit.getPlayer(shop.getOwner()), shop.getPrice());
-
-                            String name;
-                            try {
-                                name = lastItem.getItemMeta().getDisplayName();
-                            } catch (NullPointerException npe) {
-                                name = lastItem.getType().name();
-                            }
-                            if (name.isEmpty()) name = lastItem.getType().name();
-
-                            Bukkit.getPlayer(shop.getOwner()).sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + Bukkit.getPlayer(e.getWhoClicked().getUniqueId()).getDisplayName() + " bought " + lastItem.getAmount() + " " + ChatColor.GOLD + name + ChatColor.RESET + " for " + ChatColor.GREEN + "$" + payment.amount + "!");
-                        } else {
-                            CannoliShop.getEconomy().depositPlayer(Bukkit.getOfflinePlayer(shop.getOwner()), shop.getPrice());
-                        }
-                        e.setCancelled(true);
-                    }
+                if (shop.getMaterial() != null && e.getWhoClicked().getInventory().contains(shop.getMaterial(), shop.getPrice())) {
+                    ItemStack item = new ItemStack(shop.getMaterial(), shop.getPrice());
+                    handlePurchase(e, item, shop.isAdmin());
+                } else if (shop.getMythicItem() != null && inventoryHasMythicItem(e.getWhoClicked().getInventory(), shop)) {
+                    ItemStack item = BukkitAdapter.adapt(MythicBukkit.inst().getItemManager().getItem(shop.getMythicItem()).get().generateItemStack(shop.getPrice()));
+                    handlePurchase(e, item, shop.isAdmin());
                 } else {
-                    if (shop.getMaterial() != null && e.getWhoClicked().getInventory().contains(shop.getMaterial(), shop.getPrice())) {
-                        ItemStack item = new ItemStack(shop.getMaterial(), shop.getPrice());
-                        handlePurchase(e, item);
-                    } else if (shop.getMythicItem() != null && inventoryHasMythicItem(e.getWhoClicked().getInventory(), shop)) {
-                        ItemStack item = BukkitAdapter.adapt(MythicBukkit.inst().getItemManager().getItem(shop.getMythicItem()).get().generateItemStack(shop.getPrice()));
-                        handlePurchase(e, item);
-                    } else {
-                        if (e.getCurrentItem() == null) return;
-                        e.getWhoClicked().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "You cannot afford this item!");
-                        e.setCancelled(true);
-                    }
+                    if (e.getCurrentItem() == null) return;
+                    e.getWhoClicked().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "You cannot afford this item!");
+                    e.setCancelled(true);
                 }
             } else
                 e.getWhoClicked().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "You don't have enough space to make this purchase!");
         }
     }
 
-    private void handlePurchase(InventoryClickEvent e, ItemStack item) {
-        if (Objects.equals(e.getCurrentItem(), item)) {
+    private void handlePurchase(InventoryClickEvent e, ItemStack price, boolean isAdmin) {
+        if (Objects.equals(e.getCurrentItem(), price)) {
             e.setCancelled(true);
             return;
         }
 
         e.getWhoClicked().getInventory().addItem(e.getCurrentItem());
-        e.setCurrentItem(item);
-        e.getWhoClicked().getInventory().removeItem(item);
+        if(!isAdmin) e.setCurrentItem(price);
+        e.getWhoClicked().getInventory().removeItem(price);
 
         e.setCancelled(true);
     }
