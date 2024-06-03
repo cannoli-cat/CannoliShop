@@ -11,7 +11,7 @@ Requires MythicMobs as a dependency.
          4. Third line can be any valid minecraft material or MythicItem.
 
 # Admin Shops:
-### An admin shop allows for all items within the shop to be purchased *infinitely*, the buyer will still be charged accordingly, however no payment will be placed in the chest. Think of it like purchasing x item fron the server.
+### An admin shop allows for all items within the shop to be purchased *infinitely*, the buyer will still be charged accordingly, however no payment will be placed in the chest. Think of it like purchasing *x* item from the server.
 
 ## How to create an admin shop:
 1. Enter admin mode via the command displayed below.
