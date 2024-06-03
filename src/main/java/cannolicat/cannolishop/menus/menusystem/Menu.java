@@ -7,6 +7,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -33,17 +34,10 @@ public abstract class Menu implements InventoryHolder {
         playerMenuUtility.getOwner().openInventory(inventory);
     }
 
+    @NotNull
     @Override
     public Inventory getInventory() {
         return inventory;
-    }
-
-    public void setFillerGlass(){
-        for (int i = 0; i < getSlots(); i++) {
-            if (inventory.getItem(i) == null){
-                inventory.setItem(i, FILLER_GLASS);
-            }
-        }
     }
 
     public ItemStack makeItem(Material material, String displayName, String... lore) {

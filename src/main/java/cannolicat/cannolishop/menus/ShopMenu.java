@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -86,20 +87,23 @@ public class ShopMenu extends PaginatedMenu {
                     assert meta != null;
                     meta.setDisplayName(ChatColor.RESET + "" + ChatColor.BOLD + "Location: " + ChatColor.GOLD + shops.get(i).getChestLoc().getBlockX() + ", " + shops.get(i).getChestLoc().getBlockY() + ", " + shops.get(i).getChestLoc().getBlockZ());
 
-                    ArrayList<String> lore = new ArrayList<>();
-
-                    if(shops.get(i).getMythicItem() != null && shops.get(i).getMaterial() == null) lore.add(ChatColor.LIGHT_PURPLE + "Price" + ChatColor.WHITE + ": " + shops.get(i).getPrice() + " " + shops.get(i).getMythicItem());
-                    else if (shops.get(i).getMaterial() != null)  lore.add(ChatColor.LIGHT_PURPLE + "Price" + ChatColor.WHITE + ": " + shops.get(i).getPrice() + " " + shops.get(i).getMaterial());
-
-                    lore.add(ChatColor.RESET + "" + ChatColor.LIGHT_PURPLE + "Admin Shop" + ChatColor.WHITE + "? " + ChatColor.RESET + (shops.get(i).isAdmin() ? ChatColor.GREEN : ChatColor.DARK_RED) + shops.get(i).isAdmin());
-                    lore.add(ChatColor.RESET + "" + ChatColor.BOLD + ChatColor.GOLD + "<Click to teleport>");
-
-                    meta.setLore(lore);
+                    meta.setLore(getLore(i));
                     shopItem.setItemMeta(meta);
 
                     inventory.addItem(shopItem);
                 }
             }
         }
+    }
+
+    private @NotNull ArrayList<String> getLore(int i) {
+        ArrayList<String> lore = new ArrayList<>();
+
+        if(shops.get(i).getMythicItem() != null && shops.get(i).getMaterial() == null) lore.add(ChatColor.LIGHT_PURPLE + "Price" + ChatColor.WHITE + ": " + shops.get(i).getPrice() + " " + shops.get(i).getMythicItem());
+        else if (shops.get(i).getMaterial() != null)  lore.add(ChatColor.LIGHT_PURPLE + "Price" + ChatColor.WHITE + ": " + shops.get(i).getPrice() + " " + shops.get(i).getMaterial());
+
+        lore.add(ChatColor.RESET + "" + ChatColor.LIGHT_PURPLE + "Admin Shop" + ChatColor.WHITE + "? " + ChatColor.RESET + (shops.get(i).isAdmin() ? ChatColor.GREEN : ChatColor.DARK_RED) + shops.get(i).isAdmin());
+        lore.add(ChatColor.RESET + "" + ChatColor.BOLD + ChatColor.GOLD + "<Click to teleport>");
+        return lore;
     }
 }

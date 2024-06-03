@@ -4,6 +4,8 @@ import cannolicat.cannolishop.CannoliShop;
 import cannolicat.cannolishop.Shop;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.items.MythicItem;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Chest;
 import org.bukkit.event.EventHandler;
@@ -16,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class ShopInteract implements Listener {
@@ -56,8 +59,13 @@ public class ShopInteract implements Listener {
                     ItemStack item = new ItemStack(shop.getMaterial(), shop.getPrice());
                     handlePurchase(e, item, shop.isAdmin());
                 } else if (shop.getMythicItem() != null && inventoryHasMythicItem(e.getWhoClicked().getInventory(), shop)) {
-                    ItemStack item = BukkitAdapter.adapt(MythicBukkit.inst().getItemManager().getItem(shop.getMythicItem()).get().generateItemStack(shop.getPrice()));
-                    handlePurchase(e, item, shop.isAdmin());
+                    Optional<MythicItem> maybeItem = MythicBukkit.inst().getItemManager().getItem(shop.getMythicItem());
+
+                    if(maybeItem.isPresent()) {
+                        ItemStack item = BukkitAdapter.adapt(maybeItem.get().generateItemStack(shop.getPrice()));
+                        handlePurchase(e, item, shop.isAdmin());
+                    } else
+                        Bukkit.getLogger().severe("[CannoliShop] Could not handle purchase! Item was not present. Please contact cannoli_cat.");
                 } else {
                     if (e.getCurrentItem() == null) return;
                     e.getWhoClicked().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "You cannot afford this item!");

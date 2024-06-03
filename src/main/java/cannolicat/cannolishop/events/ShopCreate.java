@@ -13,6 +13,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
+import java.util.Optional;
+
 public class ShopCreate implements Listener {
     private Chest against = null;
 
@@ -51,7 +53,7 @@ public class ShopCreate implements Listener {
                 }
 
                 Material material = Material.getMaterial(lines[2].toUpperCase());
-                MythicItem mythicItem = tryParseMythicItem(lines[2]);
+                MythicItem mythicItem = parseMythicItem(lines[2]);
 
                 if (material == null && mythicItem == null) {
                     e.getPlayer().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "Error on line 3! - You must enter a valid item!");
@@ -66,7 +68,7 @@ public class ShopCreate implements Listener {
                 } else
                     e.setLine(lines.length-1, ChatColor.GOLD + e.getPlayer().getName());
 
-                if(mythicItem != null && material == null) e.setLine(lines.length-2, ChatColor.AQUA + mythicItem.getInternalName());
+                if(mythicItem != null && material == null) e.setLine(lines.length-2, ChatColor.AQUA + (mythicItem.getDisplayName().length() > 15 ? mythicItem.getInternalName() : mythicItem.getDisplayName()));
                 else if (mythicItem == null) e.setLine(lines.length-2, ChatColor.AQUA + material.toString());
                 e.getBlock().getState().update();
 
@@ -76,10 +78,14 @@ public class ShopCreate implements Listener {
         }
     }
 
-    private MythicItem tryParseMythicItem(String item) {
+    private MythicItem parseMythicItem(String item) {
+        Optional<MythicItem> maybeItem = MythicBukkit.inst().getItemManager().getItem(item);
+        if(maybeItem.isPresent()) return maybeItem.get();
+
         for(MythicItem curItem : MythicBukkit.inst().getItemManager().getItems()) {
-            String name = curItem.getInternalName();
-            if(name.equalsIgnoreCase(item) || name.equalsIgnoreCase(item.replaceAll("\\s+","")) || name.replaceAll("_", " ").equalsIgnoreCase(item) || name.replaceAll("_", "").equalsIgnoreCase(item)) {
+            String internalName = curItem.getInternalName();
+            String displayName = curItem.getDisplayName() == null ? "null" : curItem.getDisplayName();
+            if(internalName.equalsIgnoreCase(item) || internalName.equalsIgnoreCase(item.replaceAll("\\s+","")) || internalName.replaceAll("_", " ").equalsIgnoreCase(item) || internalName.replaceAll("_", "").equalsIgnoreCase(item) || displayName.equalsIgnoreCase(item) || displayName.equalsIgnoreCase(item.replaceAll("\\s+",""))) {
                 return curItem;
             }
         }

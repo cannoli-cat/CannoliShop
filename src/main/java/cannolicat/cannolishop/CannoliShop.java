@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public final class CannoliShop extends JavaPlugin {
@@ -32,7 +33,7 @@ public final class CannoliShop extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
-        getCommand("cshop").setExecutor(new CShop());
+        Objects.requireNonNull(getCommand("cshop")).setExecutor(new CShop());
 
         if(file.exists()) {
             getLogger().info("Found saved data... attempting to load...");
@@ -45,13 +46,14 @@ public final class CannoliShop extends JavaPlugin {
     public void onDisable() {
         if(!file.exists() && !shops.isEmpty()) {
             try {
-                file.getParentFile().mkdirs();
+                if(!file.getParentFile().mkdirs()) {
+                    getLogger().severe("Failed to create parent directory! Data might not be saved correctly.");
+                }
                 if (file.createNewFile()) {
                     getLogger().info("Save file created: " + file.getName());
                 }
             } catch (IOException e) {
-                getLogger().severe("An error occurred.");
-                e.printStackTrace();
+                throw new RuntimeException("An error occurred while trying to create " + file.getName(), e);
             }
         }
 
@@ -60,7 +62,11 @@ public final class CannoliShop extends JavaPlugin {
             else getLogger().severe("Could not save data!");
         } else {
             getLogger().info("Shops list is empty, cancelling save...");
-            if(file.exists()) file.delete();
+            if(file.exists()) {
+                if(!file.delete()) {
+                    getLogger().severe("Could not delete " + file.getName());
+                }
+            }
         }
     }
 
@@ -79,11 +85,11 @@ public final class CannoliShop extends JavaPlugin {
 
             return true;
         } catch(IOException e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException("An error occurred while trying to save file data.", e);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private ArrayList<Shop> loadShops() {
         ArrayList<Shop> list;
 
@@ -99,8 +105,7 @@ public final class CannoliShop extends JavaPlugin {
 
             return list;
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("An error occurred while trying to load file data.", e);
         }
     }
 
