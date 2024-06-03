@@ -1,4 +1,4 @@
-A simple shop plugin custom made for WoC.
+A simple shop plugin custom-made for WoC.
 Requires MythicMobs as a dependency.
 
 # How to create a shop:
