@@ -1,8 +1,9 @@
 name: CannoliShop
-version: 1.2.1
+version: 1.2.2
 author: cannoli_cat
 main: cannolicat.cannolishop.CannoliShop
 api-version: '1.20'
+softdepend: [MythicMobs]
 commands:
   cshop:
     description: /cshop <admin/show> <player>

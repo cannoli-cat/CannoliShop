@@ -2,10 +2,6 @@ package cannolicat.cannolishop.events;
 
 import cannolicat.cannolishop.CannoliShop;
 import cannolicat.cannolishop.Shop;
-import io.lumine.mythic.bukkit.BukkitAdapter;
-import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.mythic.core.items.MythicItem;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Chest;
 import org.bukkit.event.EventHandler;
@@ -13,12 +9,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 public class ShopInteract implements Listener {
@@ -58,14 +52,8 @@ public class ShopInteract implements Listener {
                 if (shop.getMaterial() != null && e.getWhoClicked().getInventory().contains(shop.getMaterial(), shop.getPrice())) {
                     ItemStack item = new ItemStack(shop.getMaterial(), shop.getPrice());
                     handlePurchase(e, item, shop.isAdmin());
-                } else if (shop.getMythicItem() != null && inventoryHasMythicItem(e.getWhoClicked().getInventory(), shop)) {
-                    Optional<MythicItem> maybeItem = MythicBukkit.inst().getItemManager().getItem(shop.getMythicItem());
-
-                    if(maybeItem.isPresent()) {
-                        ItemStack item = BukkitAdapter.adapt(maybeItem.get().generateItemStack(shop.getPrice()));
-                        handlePurchase(e, item, shop.isAdmin());
-                    } else
-                        Bukkit.getLogger().severe("[CannoliShop] Could not handle purchase! Item was not present. Please contact cannoli_cat.");
+                } else if (CannoliShop.getMythicHook() != null && shop.getMythicItem() != null && CannoliShop.getMythicHook().inventoryHasMythicItem(e.getWhoClicked().getInventory(), shop)) {
+                    CannoliShop.getMythicHook().handleMythicPurchase(shop, e);
                 } else {
                     if (e.getCurrentItem() == null) return;
                     e.getWhoClicked().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "You cannot afford this item!");
@@ -76,7 +64,7 @@ public class ShopInteract implements Listener {
         }
     }
 
-    private void handlePurchase(InventoryClickEvent e, ItemStack price, boolean isAdmin) {
+    public static void handlePurchase(InventoryClickEvent e, ItemStack price, boolean isAdmin) {
         if (Objects.equals(e.getCurrentItem(), price)) {
             e.setCancelled(true);
             return;
@@ -87,19 +75,5 @@ public class ShopInteract implements Listener {
         e.getWhoClicked().getInventory().removeItem(price);
 
         e.setCancelled(true);
-    }
-
-    private boolean inventoryHasMythicItem(Inventory inv, Shop shop) {
-        for (int i = 0; i < inv.getSize(); i++) {
-            ItemStack item = inv.getItem(i);
-            if(item == null) continue;
-
-            if(MythicBukkit.inst().getItemManager().isMythicItem(item)) {
-                if(Objects.equals(MythicBukkit.inst().getItemManager().getMythicTypeFromItem(item), shop.getMythicItem())) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

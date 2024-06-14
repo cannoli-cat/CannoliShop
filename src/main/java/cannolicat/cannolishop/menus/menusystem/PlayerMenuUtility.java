@@ -12,5 +12,4 @@ public class PlayerMenuUtility {
     public Player getOwner() {
         return owner;
     }
-
 }

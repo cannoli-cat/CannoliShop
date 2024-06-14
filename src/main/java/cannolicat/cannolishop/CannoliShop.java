@@ -4,6 +4,7 @@ import cannolicat.cannolishop.commands.CShop;
 import cannolicat.cannolishop.events.ShopCreate;
 import cannolicat.cannolishop.events.ShopDestroy;
 import cannolicat.cannolishop.events.ShopInteract;
+import cannolicat.cannolishop.hooks.MythicHook;
 import cannolicat.cannolishop.listeners.MenuListener;
 import cannolicat.cannolishop.listeners.PlayerQuitListener;
 import cannolicat.cannolishop.menus.menusystem.PlayerMenuUtility;
@@ -20,12 +21,18 @@ public final class CannoliShop extends JavaPlugin {
     public ArrayList<Shop> shops = new ArrayList<>();
     public ArrayList<UUID> admins = new ArrayList<>();
     private static CannoliShop plugin;
+    private static MythicHook mythicHook = null;
     private static final File file = new File("plugins" + File.separator + "CannoliShop" + File.separator + "shops.ser");
     private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
 
     @Override
     public void onEnable() {
         plugin = this;
+
+        if (getServer().getPluginManager().getPlugin("MythicMobs") != null) {
+            getLogger().info("Hooked to MythicMobs");
+            mythicHook = new MythicHook();
+        }
 
         getServer().getPluginManager().registerEvents(new ShopCreate(), this);
         getServer().getPluginManager().registerEvents(new ShopInteract(), this);
@@ -72,6 +79,10 @@ public final class CannoliShop extends JavaPlugin {
 
     public static CannoliShop getPlugin() {
         return plugin;
+    }
+
+    public static MythicHook getMythicHook() {
+        return mythicHook;
     }
 
     private boolean saveShops() {

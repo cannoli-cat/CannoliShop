@@ -1,15 +1,16 @@
 package cannolicat.cannolishop;
 
-import io.lumine.mythic.core.items.MythicItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
 
 public class Shop implements Serializable {
+    @Serial
     private static final long serialVersionUID = 3458203942363203527L;
     private final UUID owner, world;
     private final int price;
@@ -36,10 +37,10 @@ public class Shop implements Serializable {
         Bukkit.getPlayer(owner).sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.GREEN + "Shop successfully created!");
     }
 
-    public Shop(UUID owner, int price, MythicItem mythicItem, Location chestLocation, Location signLocation, boolean isAdmin) {
+    public Shop(UUID owner, int price, String mythicItem, Location chestLocation, Location signLocation, boolean isAdmin) {
         this.owner = owner;
         this.price = price;
-        mythicItemInternalName = mythicItem.getInternalName();
+        mythicItemInternalName = mythicItem;
         world = Bukkit.getPlayer(owner).getWorld().getUID();
         chestX = chestLocation.getBlockX();
         chestY = chestLocation.getBlockY();
