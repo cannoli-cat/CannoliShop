@@ -8,7 +8,6 @@ import cannolicat.cannolishop.hooks.MythicHook;
 import cannolicat.cannolishop.listeners.MenuListener;
 import cannolicat.cannolishop.listeners.PlayerQuitListener;
 import cannolicat.cannolishop.menus.menusystem.PlayerMenuUtility;
-import io.lumine.mythic.bukkit.utils.logging.ConsoleColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,7 +30,7 @@ public final class CannoliShop extends JavaPlugin {
         plugin = this;
 
         if (getServer().getPluginManager().getPlugin("MythicMobs") != null) {
-            getLogger().info(ConsoleColor.GREEN + "Hooked to MythicMobs!");
+            getLogger().info("Hooked to MythicMobs!");
             mythicHook = new MythicHook();
         }
 
@@ -45,7 +44,7 @@ public final class CannoliShop extends JavaPlugin {
 
         if(file.exists()) {
             shops = loadShops();
-            getLogger().info( ConsoleColor.GREEN +"Successfully loaded saved data!");
+            getLogger().info( "Successfully loaded saved data!");
         }
     }
 
@@ -57,7 +56,7 @@ public final class CannoliShop extends JavaPlugin {
                     getLogger().severe("Failed to create parent directory! Data might not be saved correctly.");
                 }
                 if (file.createNewFile()) {
-                    getLogger().info(ConsoleColor.GREEN + "Save file created: " + file.getName());
+                    getLogger().info("Save file created: " + file.getName());
                 }
             } catch (IOException e) {
                 throw new RuntimeException("An error occurred while trying to create " + file.getName(), e);
@@ -65,7 +64,7 @@ public final class CannoliShop extends JavaPlugin {
         }
 
         if(!shops.isEmpty() && file.exists()) {
-            if (saveShops()) getLogger().info(ConsoleColor.GREEN + "Successfully saved data! Goodbye!");
+            if (saveShops()) getLogger().info("Successfully saved data! Goodbye!");
             else getLogger().severe("Could not save data!");
         } else {
             getLogger().info("No shops to save, cancelling save...");

@@ -14,15 +14,14 @@ public class Shop implements Serializable {
     private static final long serialVersionUID = 3458203942363203527L;
     private final UUID owner, world;
     private final int price;
-    private final Material material;
-    private final String mythicItemInternalName;
+    private final Object item;
     private final int chestX, chestY, chestZ, signX, signY, signZ;
     private final boolean isAdmin;
 
-    public Shop(UUID owner, int price, Material material, Location chestLocation, Location signLocation, boolean isAdmin) {
+    public Shop(UUID owner, int price, Object item, Location chestLocation, Location signLocation, boolean isAdmin) {
         this.owner = owner;
         this.price = price;
-        this.material = material;
+        this.item = item;
         world = Bukkit.getPlayer(owner).getWorld().getUID();
         chestX = chestLocation.getBlockX();
         chestY = chestLocation.getBlockY();
@@ -30,25 +29,6 @@ public class Shop implements Serializable {
         signX = signLocation.getBlockX();
         signY = signLocation.getBlockY();
         signZ = signLocation.getBlockZ();
-        mythicItemInternalName = null;
-        this.isAdmin = isAdmin;
-
-        CannoliShop.getPlugin().shops.add(this);
-        Bukkit.getPlayer(owner).sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.GREEN + "Shop successfully created!");
-    }
-
-    public Shop(UUID owner, int price, String mythicItem, Location chestLocation, Location signLocation, boolean isAdmin) {
-        this.owner = owner;
-        this.price = price;
-        mythicItemInternalName = mythicItem;
-        world = Bukkit.getPlayer(owner).getWorld().getUID();
-        chestX = chestLocation.getBlockX();
-        chestY = chestLocation.getBlockY();
-        chestZ = chestLocation.getBlockZ();
-        signX = signLocation.getBlockX();
-        signY = signLocation.getBlockY();
-        signZ = signLocation.getBlockZ();
-        material = null;
         this.isAdmin = isAdmin;
 
         CannoliShop.getPlugin().shops.add(this);
@@ -64,7 +44,7 @@ public class Shop implements Serializable {
     }
 
     public Material getMaterial() {
-        return material;
+        return item instanceof Material ? (Material) item : null;
     }
 
     public Location getChestLoc() {
@@ -76,7 +56,7 @@ public class Shop implements Serializable {
     }
 
     public String getMythicItem() {
-        return mythicItemInternalName;
+        return item instanceof String ? (String) item : null;
     }
 
     public void destroyShop() {

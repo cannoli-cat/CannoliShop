@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public class MythicHook {
     public void mythicShopCreate(SignChangeEvent e, String[] lines, int price, Chest against, boolean admin) {
-        MythicItem mythicItem = parseMythicItem(lines[2]);
+        MythicItem mythicItem = parseMythicItem(lines[2]).orElse(null);
 
         if (mythicItem == null) {
             e.getPlayer().sendMessage("[" + ChatColor.GOLD + "CannoliShop" + ChatColor.RESET + "]: " + ChatColor.RED + "Error on line 3! - You must enter a valid item!");
@@ -42,18 +42,18 @@ public class MythicHook {
             Bukkit.getLogger().severe("[CannoliShop] Could not handle purchase! Item was not present. Please contact cannoli_cat.");
     }
 
-    private MythicItem parseMythicItem(String item) {
+    private Optional<MythicItem> parseMythicItem(String item) {
         Optional<MythicItem> maybeItem = MythicBukkit.inst().getItemManager().getItem(item);
-        if(maybeItem.isPresent()) return maybeItem.get();
+        if(maybeItem.isPresent()) return maybeItem;
 
         for(MythicItem curItem : MythicBukkit.inst().getItemManager().getItems()) {
             String internalName = curItem.getInternalName();
             String displayName = curItem.getDisplayName() == null ? "null" : curItem.getDisplayName();
             if(internalName.equalsIgnoreCase(item) || internalName.equalsIgnoreCase(item.replaceAll("\\s+","")) || internalName.replaceAll("_", " ").equalsIgnoreCase(item) || internalName.replaceAll("_", "").equalsIgnoreCase(item) || displayName.equalsIgnoreCase(item) || displayName.equalsIgnoreCase(item.replaceAll("\\s+",""))) {
-                return curItem;
+                return Optional.of(curItem);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public static boolean inventoryHasMythicItem(Inventory inv, Shop shop) {
