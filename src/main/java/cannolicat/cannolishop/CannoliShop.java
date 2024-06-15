@@ -8,6 +8,7 @@ import cannolicat.cannolishop.hooks.MythicHook;
 import cannolicat.cannolishop.listeners.MenuListener;
 import cannolicat.cannolishop.listeners.PlayerQuitListener;
 import cannolicat.cannolishop.menus.menusystem.PlayerMenuUtility;
+import io.lumine.mythic.bukkit.utils.logging.ConsoleColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,7 +31,7 @@ public final class CannoliShop extends JavaPlugin {
         plugin = this;
 
         if (getServer().getPluginManager().getPlugin("MythicMobs") != null) {
-            getLogger().info("Hooked to MythicMobs");
+            getLogger().info(ConsoleColor.GREEN + "Hooked to MythicMobs!");
             mythicHook = new MythicHook();
         }
 
@@ -43,9 +44,8 @@ public final class CannoliShop extends JavaPlugin {
         Objects.requireNonNull(getCommand("cshop")).setExecutor(new CShop());
 
         if(file.exists()) {
-            getLogger().info("Found saved data... attempting to load...");
             shops = loadShops();
-            getLogger().info("Successfully loaded saved data!");
+            getLogger().info( ConsoleColor.GREEN +"Successfully loaded saved data!");
         }
     }
 
@@ -57,7 +57,7 @@ public final class CannoliShop extends JavaPlugin {
                     getLogger().severe("Failed to create parent directory! Data might not be saved correctly.");
                 }
                 if (file.createNewFile()) {
-                    getLogger().info("Save file created: " + file.getName());
+                    getLogger().info(ConsoleColor.GREEN + "Save file created: " + file.getName());
                 }
             } catch (IOException e) {
                 throw new RuntimeException("An error occurred while trying to create " + file.getName(), e);
@@ -65,10 +65,10 @@ public final class CannoliShop extends JavaPlugin {
         }
 
         if(!shops.isEmpty() && file.exists()) {
-            if (saveShops()) getLogger().info("Successfully saved data!");
+            if (saveShops()) getLogger().info(ConsoleColor.GREEN + "Successfully saved data! Goodbye!");
             else getLogger().severe("Could not save data!");
         } else {
-            getLogger().info("Shops list is empty, cancelling save...");
+            getLogger().info("No shops to save, cancelling save...");
             if(file.exists()) {
                 if(!file.delete()) {
                     getLogger().severe("Could not delete " + file.getName());
@@ -110,6 +110,10 @@ public final class CannoliShop extends JavaPlugin {
 
             if(file.length() != 0) list = (ArrayList<Shop>) ois.readObject();
             else list = new ArrayList<>();
+
+            if(mythicHook == null) {
+                list.removeIf(shop -> shop.getMythicItem() != null);
+            }
 
             ois.close();
             fis.close();

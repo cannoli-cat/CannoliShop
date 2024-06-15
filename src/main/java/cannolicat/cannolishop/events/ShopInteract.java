@@ -2,6 +2,7 @@ package cannolicat.cannolishop.events;
 
 import cannolicat.cannolishop.CannoliShop;
 import cannolicat.cannolishop.Shop;
+import cannolicat.cannolishop.hooks.MythicHook;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Chest;
 import org.bukkit.event.EventHandler;
@@ -52,7 +53,7 @@ public class ShopInteract implements Listener {
                 if (shop.getMaterial() != null && e.getWhoClicked().getInventory().contains(shop.getMaterial(), shop.getPrice())) {
                     ItemStack item = new ItemStack(shop.getMaterial(), shop.getPrice());
                     handlePurchase(e, item, shop.isAdmin());
-                } else if (CannoliShop.getMythicHook() != null && shop.getMythicItem() != null && CannoliShop.getMythicHook().inventoryHasMythicItem(e.getWhoClicked().getInventory(), shop)) {
+                } else if (CannoliShop.getMythicHook() != null && shop.getMythicItem() != null && MythicHook.inventoryHasMythicItem(e.getWhoClicked().getInventory(), shop)) {
                     CannoliShop.getMythicHook().handleMythicPurchase(shop, e);
                 } else {
                     if (e.getCurrentItem() == null) return;
