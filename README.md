@@ -10,7 +10,7 @@ Supports MythicMobs items.
          
          4. Third line can be any valid minecraft material or MythicItem.
 
-###Example Shop Creations:
+###Example Shop Creations:<br />
 [price]<br />
 40<br />
 dirt
