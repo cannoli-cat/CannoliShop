@@ -6,7 +6,7 @@ Supports MythicMobs items.
    
    2. First line should always be [price] to indicate creation of a shop.
       
-      3. Second line is the price of anything in the chest. Must be a valid integer.
+      3. Second line is the price of anything in the chest. Must be a valid integer. To create a Vault economy shop, you must begin the price with the dollar ```$``` sign, and you can skip step 4. 
          
          4. Third line can be any valid minecraft material or MythicItem.
 
