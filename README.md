@@ -11,15 +11,15 @@ Supports MythicMobs items.
          4. Third line can be any valid minecraft material or MythicItem.
 
 ###Example Shop Creations:
-[price]\n
-40\n
+[price]<br />
+40<br />
 dirt
 
-[price]\n
+[price]<br />
 $1
 
-[price]\n
-5\n
+[price]<br />
+5<br />
 **MYTHIC_ITEM_INTERNAL_NAME**
 
 # Admin Shops:
