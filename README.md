@@ -10,6 +10,18 @@ Supports MythicMobs items.
          
          4. Third line can be any valid minecraft material or MythicItem.
 
+###Example Shop Creations:
+[price]
+40
+dirt
+
+[price]
+$1
+
+[price]
+5
+**MYTHIC_ITEM_INTERNAL_NAME**
+
 # Admin Shops:
 ### An admin shop allows for all items within the shop to be purchased *infinitely*, the buyer will still be charged accordingly, however no payment will be placed in the chest. Think of it like purchasing *x* item from the server.
 
